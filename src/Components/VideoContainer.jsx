@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import Peer from 'peerjs'
 
 const VideoContainer = () => {
 	const userVideo = useRef()
@@ -13,6 +14,7 @@ const VideoContainer = () => {
 			}
 		  })
 	}, [])
+
 	console.log(stream)
 	return (
 		<div>

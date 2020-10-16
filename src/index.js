@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AppSocket from './AppSocket.jsx'
+import AppSocketVideo from './AppSocketVideo.jsx'
 import './index.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <AppSocket />
+    <AppSocketVideo />
   </React.StrictMode>,
   document.getElementById('root')
 );

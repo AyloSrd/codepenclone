@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Editor from './Components/Editor'
-import useLocalStorage from './hooks/useLocalStorage'
-import { initiateSocket, disconnectSocket,
+import useLocalStorage from './hooks/useLocalStorage';
+import myPeer from './peer/myPeer'
+import { initiateSocketWithVideo, disconnectSocket,
 	subscribeToClass, sendCode } from './socket/socket'
 
 
-function AppSocket() {
+const AppSocketVideo = () => {
 
   const [ html, setHtml ] = useLocalStorage('html', '')
   const [ css, setCss ] = useLocalStorage('css', '')
@@ -16,11 +17,18 @@ function AppSocket() {
   const [ incomingCss, setIncomingCss ] = useState('')
   const [ incomingJs, setIncomingJs ] = useState('')
 
+  const [ socketId, setSocketId ] = useState('')
+
   const [srcDoc, setSrcDoc] = useState('')
   const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
-    initiateSocket('class')
+    myPeer.on('open', id => {
+      setSocketId(id)
+      initiateSocketWithVideo('class', id)
+    })
+
+    // initiateSocketWithVideo('class', '10')
     subscribeToClass((_, code) => {
         setIncomingHtml(code.html)
         setIncomingCss(code.css)
@@ -72,7 +80,8 @@ function AppSocket() {
     sendCode('class', {
       html,
       css, 
-      js
+      js,
+      socketId
     })
    }, 1000)
 
@@ -126,4 +135,4 @@ function AppSocket() {
   );
 }
 
-export default AppSocket;
+export default AppSocketVideo;
