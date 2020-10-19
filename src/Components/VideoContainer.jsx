@@ -12,7 +12,7 @@ const VideoContainer = () => {
 			if (userVideo.current) {
 			  userVideo.current.srcObject = stream;
 			}
-		  })
+		})
 	}, [])
 
 	console.log(stream)

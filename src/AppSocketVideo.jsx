@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
+import React, { Component, useState, useEffect, useRef } from 'react'
+import './App.css'
 import Editor from './Components/Editor'
-import useLocalStorage from './hooks/useLocalStorage';
+import useLocalStorage from './hooks/useLocalStorage'
 import myPeer from './peer/myPeer'
-import { initiateSocketWithVideo, disconnectSocket,
-	subscribeToClass, sendCode } from './socket/socket'
+import { initiateSocketWithVideo, subscribeToClass, sendCode, callNewClassmate, streamCall } from './socket/socket'
+import { getCamera, answerCalls } from './peer/getCameraAndAnswerCalls'
 
 
 const AppSocketVideo = () => {
@@ -17,27 +17,48 @@ const AppSocketVideo = () => {
   const [ incomingCss, setIncomingCss ] = useState('')
   const [ incomingJs, setIncomingJs ] = useState('')
 
-  const [ socketId, setSocketId ] = useState('')
+  const [ socketId, setSocketId ] = useState(null)
 
   const [srcDoc, setSrcDoc] = useState('')
   const [isPaused, setIsPaused] = useState(false)
 
+  // video
+  const userVideo = useRef()
+	const classmateVideo = useRef()
+  const [ stream, setStream ] = useState()
+  const [ call, setCall ] = useState(null)
+  
   useEffect(() => {
     myPeer.on('open', id => {
       setSocketId(id)
-      initiateSocketWithVideo('class', id)
     })
+    getCamera(userVideo, setStream)
+  }, [])
 
-    // initiateSocketWithVideo('class', '10')
-    subscribeToClass((_, code) => {
+  useEffect(() => {
+    if(!socketId) return console.log(socketId)
+    console.log(socketId)
+    initiateSocketWithVideo('class', socketId)
+    subscribeToClass((_, code, socketId) => {
         setIncomingHtml(code.html)
         setIncomingCss(code.css)
         setIncomingJs(code.js)
     })
-    return () => disconnectSocket()
-  }, [])
+    // return () => disconnectSocketVideo('class', socketId)
+  }, [ socketId ])
 
   useEffect(() => {
+    callNewClassmate(stream, setCall)
+    answerCalls(stream, classmateVideo)
+  }, [ stream ])
+
+  useEffect(() => {
+    console.log('use effect', call)
+    streamCall(call, classmateVideo)
+  }, [ call ])
+  console.log('call in render', call)
+  useEffect(() => {
+    if(!socketId) return console.log(socketId)
     if (!isPaused) {
       setHtml(incomingHtml)
       setCss(incomingCss)
@@ -55,6 +76,8 @@ const AppSocketVideo = () => {
 
   useEffect(() => {
    const timeout = setTimeout(() => {
+    if(!socketId) return () => clearTimeout(timeout)
+
     setSrcDoc(`
       <!DOCTYPE html>
       <html>
@@ -80,15 +103,13 @@ const AppSocketVideo = () => {
     sendCode('class', {
       html,
       css, 
-      js,
-      socketId
-    })
+      js
+    }, socketId)
    }, 1000)
 
    return () => clearTimeout(timeout)
   }, [ html, css, js ])
 
-  console.log(isPaused)
   return (
     <>
       <div className="pane top-pane">
@@ -131,6 +152,10 @@ const AppSocketVideo = () => {
           height="100%"
           />
       </div>
+      <div>
+        <video playsInline muted ref={userVideo} autoPlay/>
+        <video playsInline muted ref={classmateVideo} autoPlay/>
+		</div>
     </>
   );
 }
