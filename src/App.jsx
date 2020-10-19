@@ -26,12 +26,8 @@ const App = () => {
 				{/* A <Switch> looks through its children <Route>s and
 					renders the first one that matches the current URL. */}
 				<Switch>
-				<Route path="/student">
-					<StudentsDesk />
-				</Route>
-				<Route path="/prof">
-					<ProfessorsDesk />
-				</Route>
+					<Route path="/student" component={StudentsDesk} />
+					<Route path="/prof" component = {ProfessorsDesk} />
 				</Switch>
 			</div>
 		</Router>

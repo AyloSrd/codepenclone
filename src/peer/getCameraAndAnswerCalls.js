@@ -1,5 +1,3 @@
-import myPeer from './myPeer'
-
 export const getCamera = (userVideo, setStream) => {
 	navigator.mediaDevices.getUserMedia({
 		video: true,
@@ -12,7 +10,7 @@ export const getCamera = (userVideo, setStream) => {
 	  })  
 }
 
-export const answerCalls = ( stream, classmateVideo ) => {
+export const answerCalls = ( stream, classmateVideo, myPeer ) => {
 	myPeer.on('call', call => {
 		console.log('from answerCall', call)
 		call.answer(stream)

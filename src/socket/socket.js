@@ -1,13 +1,6 @@
 import io from 'socket.io-client'
-import myPeer from '../peer/myPeer'
 
 let socket
-
-// export const initiateSocket = room => {
-//   socket = io('http://localhost:5000')
-//   console.log(`Connecting socket...`)
-//   if (socket && room) socket.emit('join', room)
-// }
 
 export const initiateSocketWithVideo = (room, socketId) => {
   socket = io('http://localhost:5000')
@@ -47,7 +40,7 @@ export const subscribeToClass = cb => {
 //   })
 // }
 
-export const callNewClassmate = (stream, cb) => {
+export const callNewClassmate = (stream, myPeer, cb) => {
   if (!socket) return(true)
   socket.on('classmate joined', (classmateId) => {
     const call = myPeer.call(classmateId, stream)

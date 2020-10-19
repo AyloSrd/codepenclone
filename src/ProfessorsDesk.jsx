@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import './App.css'
 import Editor from './Components/Editor'
 import useLocalStorage from './hooks/useLocalStorage'
-import myPeer from './peer/myPeer'
-import { initiateSocketWithVideo, subscribeToClass, sendCode, callNewClassmate } from './socket/socket'
+import Peer from 'peerjs'
+import { initiateSocketWithVideo, sendCode, callNewClassmate } from './socket/socket'
 import { getCamera } from './peer/getCameraAndAnswerCalls'
 
 
@@ -14,6 +14,7 @@ const ClassroomSocketVideo = () => {
   const [ js, setJs ] = useLocalStorage('js', '')
 
   const [ socketId, setSocketId ] = useState(null)
+  const [ myPeer, setMyPeer] = useState('')
 
   const [srcDoc, setSrcDoc] = useState('')
 
@@ -23,9 +24,17 @@ const ClassroomSocketVideo = () => {
   const [ call, setCall ] = useState(null)
   
   useEffect(() => {
+    const myPeer = new Peer( undefined, {
+      host:'/',
+      port: '8000'
+    })
+
+    setMyPeer(myPeer)
+
     myPeer.on('open', id => {
       setSocketId(id)
     })
+
     getCamera(userVideo, setStream)
   }, [])
 
@@ -37,7 +46,7 @@ const ClassroomSocketVideo = () => {
   }, [ socketId ])
 
   useEffect(() => {
-    callNewClassmate(stream, setCall)
+    callNewClassmate(stream, myPeer, setCall)
   }, [ stream ])
 
 
@@ -79,40 +88,43 @@ const ClassroomSocketVideo = () => {
 
   return (
     <>
-      <h1>Professor</h1>
-      <div className="pane top-pane">
-        <Editor 
-          language="xml" 
-          displayName="HTML"
-          value={html}
-          onChange={setHtml}
-        />
-        <Editor 
-          language="css" 
-          displayName="CSS"
-          value={css}
-          onChange={setCss}
-        />
-        <Editor 
-          language="javascript" 
-          displayName="JS"
-          value={js}
-          onChange={setJs}
-        />
-      </div>
-      <div className="pane">
-        <iframe 
-        srcDoc={srcDoc}
-          title="output"
-          sandbox="allow-scripts"
-          frameBorder="0"
-          width="100vw"
-          height="100%"
+      <div id="EditorAndIframeContainer">
+        <div className="pane left-pane">
+          <Editor 
+            language="xml" 
+            displayName="HTML"
+            value={html}
+            onChange={setHtml}
           />
+          <Editor 
+            language="css" 
+            displayName="CSS"
+            value={css}
+            onChange={setCss}
+          />
+          <Editor 
+            language="javascript" 
+            displayName="JS"
+            value={js}
+            onChange={setJs}
+          />
+        </div>
+        <div className="pane right-pane">
+          <iframe 
+          srcDoc={srcDoc}
+            title="output"
+            sandbox="allow-scripts"
+            frameBorder="0"
+            width="100vw"
+            height="100%"
+            />
+        </div>
       </div>
-      <div>
-        <video playsInline muted ref={userVideo} autoPlay/>
-		</div>
+      <div id="VideoContainer">
+        <div className="Video">
+          <video playsInline muted ref={userVideo} autoPlay/>
+        </div>
+		  </div>
     </>
   );
 }
