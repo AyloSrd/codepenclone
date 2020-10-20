@@ -79,6 +79,25 @@ body {
   float:right;
 }
 
+div.Play {
+  width: 20px;
+  height: 20px;
+  border-style: solid;
+  border-width: 10px 0px 10px 20px;
+  border-color: transparent transparent transparent white;
+  transition: 0.1s;
+}
+
+div.Pause {
+  width: 20px;
+  height: 20px;
+  border-style: double;
+  border-width: 0px 0px 0px 20px;
+  border-color: transparent transparent transparent white;
+  transition: 0.1s;
+
+}
+
 .pane {
   height: 100%;
   width: 50vw;

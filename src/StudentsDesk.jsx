@@ -170,10 +170,13 @@ const ClassroomSocketVideo = () => {
                 }}
               className="Tablinks Right"
             >
-              { isPaused
-                ? 'play'
-                : 'pause'
-                }
+              <div 
+              className={
+                isPaused 
+                ? 'Play' 
+                : 'Pause'
+                }>
+              </div>
             </button>
           </div>
           <Editor 
