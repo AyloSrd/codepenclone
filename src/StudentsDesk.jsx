@@ -3,11 +3,11 @@ import './App.css'
 import Editor from './Components/Editor'
 import useLocalStorage from './hooks/useLocalStorage'
 import Peer from 'peerjs'
-import { initiateSocketWithVideo, subscribeToClass } from './socket/socket'
+import { initiateSocketWithVideo, subscribeToClass, getActiveTab } from './socket/socket'
 import { getCamera, answerCalls } from './peer/getCameraAndAnswerCalls'
 import saveIcon from './saveIcon.png'
 
-const ClassroomSocketVideo = () => {
+const StudentsDesk = () => {
 
   const [ html, setHtml ] = useLocalStorage('html', '')
   const [ css, setCss ] = useLocalStorage('css', '')
@@ -57,6 +57,7 @@ const ClassroomSocketVideo = () => {
         setIncomingCss(code.css)
         setIncomingJs(code.js)
     })
+    getActiveTab(setIsHtmlTabOpen, setIsCssTabOpen, setIsJsTabOpen)
     // return () => disconnectSocketVideo('class', socketId)
   }, [ socketId ])
 
@@ -223,4 +224,4 @@ const ClassroomSocketVideo = () => {
   );
 }
 
-export default ClassroomSocketVideo;
+export default StudentsDesk

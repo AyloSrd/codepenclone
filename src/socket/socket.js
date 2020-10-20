@@ -21,11 +21,20 @@ export const disconnectSocketVideo = (room, socketId) => {
   }
 }
 
-export const subscribeToClass = cb => {
+export const subscribeToClass = (cb, htmlTab, cssTab, jsTab) => {
   if (!socket) return(true)
   socket.on('coding', ( code, socketId ) => {
     console.log(`Websocket event received (${code})! from ${socketId}`)
     return cb(null, code, socketId)
+  })
+}
+
+export const getActiveTab = (isHtmlTabOpen, isCssTabOpen, isJsTabOpen) => {
+  if (!socket) return(true)
+  socket.on('change tab', (html, css, js) => {
+    isHtmlTabOpen(html)
+    isCssTabOpen(css)
+    isJsTabOpen(js)
   })
 }
 
@@ -69,4 +78,8 @@ export const streamCall = ( call, classmateVideo ) => {
 
 export const sendCode = (room, code, socketId) => {
   if (socket) socket.emit('coding', code, room, socketId)
+}
+
+export const changeTab = (room, html, css, js) => {
+  if (socket) socket.emit('change tab', room, html, css, js)
 }

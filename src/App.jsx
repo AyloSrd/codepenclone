@@ -1,5 +1,5 @@
 import React from 'react'
-import ProfessorsDesk from './ProfessorsDesk'
+import TeachersDesk from './TeachersDesk'
 import StudentsDesk from './StudentsDesk'
 import { 
 	BrowserRouter as Router,
@@ -27,7 +27,7 @@ const App = () => {
 					renders the first one that matches the current URL. */}
 				<Switch>
 					<Route path="/student" component={StudentsDesk} />
-					<Route path="/prof" component = {ProfessorsDesk} />
+					<Route path="/prof" component = {TeachersDesk} />
 				</Switch>
 			</div>
 		</Router>
