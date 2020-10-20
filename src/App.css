@@ -3,39 +3,94 @@
 }
 
 :root {
-  --dark-grey:#333;
-  --darker-grey: #222;
+  --dark-grey:#1e1e2f;
+  --darker-grey:#151522;
   --light-grey: #777;
+  --light-purple: #c247a6;
+  --dark-purple: #5e1447;
   --standard-margin-padding: 20px;
+  --little-margin-padding: 10px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: var(--little-margin-padding);
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--darker-grey);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--dark-grey);
+}
+
+body {
+  margin: 0;
+  background-color: var(--dark-grey);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 #EditorAndIframeContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: 100vh;
+  gap: 1px var(--darker-grey);
+  height: 85vh;
+  max-height: 100%;
   background-color: var(--darker-grey);
   max-width: 100%;
   overflow: hidden;
+  margin-bottom: var(--standard-margin-padding);
+  border: solid 0.5px var(--darker-grey);
 }
 
-body {
-  margin: 0;
+/*--------- TAB --------- */
+
+.Tab {
+  height: 40px;
 }
 
-.top-pane {
-  background-color: hsl(225, 6%, 25%);
+.Tablinks {
+  background-color: transparent;
+  border: none; 
+  color: white;
+  cursor: pointer;
+  height: 100%;
+  padding: 0 var(--little-margin-padding);
+}
+
+.Tablinks:hover {
+  background-color: var(--light-grey);
+}
+
+.Tablinks.open {
+  background-color: var(--dark-grey);
+}
+
+.Tablinks:focus{
+  outline: none;
+}
+
+.Tablinks.Right {
+  float:right;
 }
 
 .pane {
-  height: 100vh;
+  height: 100%;
   width: 50vw;
   max-width: 100%;
   display: flex;
+  flex-direction: column;
 }
 
 iframe {
-  height: 100vh;
+  height: 100%;
   width: 100vw;
+  max-height: 100%;
   max-width: 100%;
   background-color: white;
 }
@@ -45,35 +100,19 @@ iframe {
   flex-basis: 0;
   display: flex;
   flex-direction: column;
-  padding: .5rem;
-  background-color: hsl(225, 6%, 25%);
+  padding: var(--little-margin-padding);
+  background-color:var(--dark-grey);
+  overflow-y: auto;
 }
 
 .editor-container.collapsed {
   flex-grow: 0;
+  padding: 0;
 }
 
 .editor-container.collapsed .CodeMirror-scroll {
   position: absolute;
   overflow: hidden !important;
-}
-
-.expand-collapse-btn {
-  margin-left: .5rem;
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-
-.editor-title {
-  display: flex;
-  justify-content: space-between;
-  background-color: hsl(225, 6%, 13%);
-  color: white;
-  padding: .5rem .5rem .5rem 1rem;
-  border-top-right-radius: .5rem;
-  border-top-left-radius: .5rem;
 }
 
 .CodeMirror {
@@ -82,23 +121,31 @@ iframe {
 
 .code-mirror-wrapper {
   flex-grow: 1;
-  border-bottom-right-radius: .5rem;
-  border-bottom-left-radius: .5rem;
   overflow: hidden;
+  border: solid 0.5px var(--darker-grey);
 }
+
+/*--------- VIDEOS --------- */
 
 #VideoContainer {
   position: fixed;
   bottom: 0px;
   right: 0px;
-  padding: var(--standard-margin-padding);
+  padding: var(--little-margin-padding);
+  display: flex;
+  align-items: flex-end;
 }
 
 .Video {
-  height: 200px;
-  width: 200px;
+  height: 150px;
+  width: 150px;
   border-radius: 50%;
   overflow: hidden;
+}
+
+.SmallV {
+  height: 80px;
+  width: 80px;
 }
 
 video {

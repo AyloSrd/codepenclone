@@ -3,7 +3,7 @@ import './App.css'
 import Editor from './Components/Editor'
 import useLocalStorage from './hooks/useLocalStorage'
 import Peer from 'peerjs'
-import { initiateSocketWithVideo, sendCode, callNewClassmate } from './socket/socket'
+import { initiateSocketWithVideo, sendCode, callNewClassmate, streamCall } from './socket/socket'
 import { getCamera } from './peer/getCameraAndAnswerCalls'
 
 
@@ -13,6 +13,10 @@ const ClassroomSocketVideo = () => {
   const [ css, setCss ] = useLocalStorage('css', '')
   const [ js, setJs ] = useLocalStorage('js', '')
 
+  const [ isHtmlTabOpen, setIsHtmlTabOpen ] = useState(true)
+  const [ isCssTabOpen, setIsCssTabOpen ] = useState(false)
+  const [ isJsTabOpen, setIsJsTabOpen ] = useState(false)
+  
   const [ socketId, setSocketId ] = useState(null)
   const [ myPeer, setMyPeer] = useState('')
 
@@ -20,8 +24,10 @@ const ClassroomSocketVideo = () => {
 
   // video
   const userVideo = useRef()
+  const classmateVideo = useRef()
   const [ stream, setStream ] = useState()
   const [ call, setCall ] = useState(null)
+  // const [ studentsVideos, setStudentsVideos] = useState([])
   
   useEffect(() => {
     const myPeer = new Peer( undefined, {
@@ -49,6 +55,14 @@ const ClassroomSocketVideo = () => {
     callNewClassmate(stream, myPeer, setCall)
   }, [ stream ])
 
+  // const appendVideos = mediaStream => {
+  //   setStudentsVideos(prevVideos => [ ...prevVideos, mediaStream])
+  // }
+
+  useEffect(() => {
+    if(!call) return console.log('no call')
+    streamCall(call, classmateVideo)
+  }, [ call ])
 
   useEffect(() => {
    const timeout = setTimeout(() => {
@@ -86,27 +100,62 @@ const ClassroomSocketVideo = () => {
    return () => clearTimeout(timeout)
   }, [ html, css, js ])
 
+  const openTab = e => {
+    setIsHtmlTabOpen(false)
+    setIsCssTabOpen(false)
+    setIsJsTabOpen(false)
+
+    switch (e.target.name) {
+      case 'htmlTab':
+        setIsHtmlTabOpen(true)
+        break
+      case 'cssTab':
+        setIsCssTabOpen(true)
+        break;
+      case 'jsTab':
+        setIsJsTabOpen(true)
+        break;
+      default:
+        setIsHtmlTabOpen(true)
+    }
+    
+  }
+
   return (
     <>
       <div id="EditorAndIframeContainer">
         <div className="pane left-pane">
+          <div class="Tab">
+            <button 
+              name="htmlTab" 
+              className={`Tablinks ${ isHtmlTabOpen ? 'open' : '' }`} 
+              onClick={openTab}>HTML</button>
+            <button 
+              name="cssTab" 
+              className={`Tablinks ${ isCssTabOpen ? 'open' : '' }`} 
+              onClick={openTab}>CSS</button>
+            <button 
+              name="jsTab" 
+              className={`Tablinks ${ isJsTabOpen ? 'open' : '' }`} 
+              onClick={openTab}>JS</button>
+          </div>
           <Editor 
-            language="xml" 
-            displayName="HTML"
+            language="xml"
             value={html}
             onChange={setHtml}
+            open={isHtmlTabOpen}
           />
           <Editor 
             language="css" 
-            displayName="CSS"
             value={css}
             onChange={setCss}
+            open={isCssTabOpen}
           />
           <Editor 
             language="javascript" 
-            displayName="JS"
             value={js}
             onChange={setJs}
+            open={isJsTabOpen}
           />
         </div>
         <div className="pane right-pane">
@@ -121,6 +170,9 @@ const ClassroomSocketVideo = () => {
         </div>
       </div>
       <div id="VideoContainer">
+        <div className="Video SmallV">
+          <video playsInline muted ref={classmateVideo} autoPlay/>
+        </div>
         <div className="Video">
           <video playsInline muted ref={userVideo} autoPlay/>
         </div>

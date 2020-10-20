@@ -17,6 +17,10 @@ const ClassroomSocketVideo = () => {
   const [ incomingCss, setIncomingCss ] = useState('')
   const [ incomingJs, setIncomingJs ] = useState('')
 
+  const [ isHtmlTabOpen, setIsHtmlTabOpen ] = useState(true)
+  const [ isCssTabOpen, setIsCssTabOpen ] = useState(false)
+  const [ isJsTabOpen, setIsJsTabOpen ] = useState(false)
+
   const [ socketId, setSocketId ] = useState(null)
   const [ myPeer, setMyPeer] = useState('')
 
@@ -29,6 +33,10 @@ const ClassroomSocketVideo = () => {
   const [ stream, setStream ] = useState()
   
   useEffect(() => {
+    getCamera(userVideo, setStream)
+  }, [])
+
+  useEffect(() => {
     const myPeer = new Peer( undefined, {
       host:'/',
       port: '8000'
@@ -38,9 +46,7 @@ const ClassroomSocketVideo = () => {
     myPeer.on('open', id => {
       setSocketId(id)
     })
-
-    getCamera(userVideo, setStream)
-  }, [])
+  }, [ stream ])
 
   useEffect(() => {
     if(!socketId) return console.log(socketId)
@@ -110,53 +116,104 @@ const ClassroomSocketVideo = () => {
    return () => clearTimeout(timeout)
   }, [ html, css, js ])
 
+  const openTab = e => {
+    setIsHtmlTabOpen(false)
+    setIsCssTabOpen(false)
+    setIsJsTabOpen(false)
+
+    switch (e.target.name) {
+      case 'htmlTab':
+        setIsHtmlTabOpen(true)
+        break
+      case 'cssTab':
+        setIsCssTabOpen(true)
+        break;
+      case 'jsTab':
+        setIsJsTabOpen(true)
+        break;
+      default:
+        setIsHtmlTabOpen(true)
+    }
+    
+  }
+
   return (
     <>
-      <h1>Student</h1>
-      <div className="pane top-pane">
-        <button onClick= {
-          () =>{
-            setIsPaused(prevPaused => !prevPaused)
-          }
-        }>
-          { isPaused
-            ? 'play'
-            : 'pause'
-            }
-          </button>
-        <Editor 
-          language="xml" 
-          displayName="HTML"
-          value={html}
-          onChange={setHtml}
-        />
-        <Editor 
-          language="css" 
-          displayName="CSS"
-          value={css}
-          onChange={setCss}
-        />
-        <Editor 
-          language="javascript" 
-          displayName="JS"
-          value={js}
-          onChange={setJs}
-        />
-      </div>
-      <div className="pane">
-        <iframe 
-        srcDoc={srcDoc}
-          title="output"
-          sandbox="allow-scripts"
-          frameBorder="0"
-          width="100vw"
-          height="100%"
+      <div id="EditorAndIframeContainer">
+        <div className="pane left-pane">
+          <div class="Tab">
+            <button 
+              name="htmlTab" 
+              className={`Tablinks ${ isHtmlTabOpen ? 'open' : '' }`} 
+              onClick={openTab}>HTML</button>
+            <button 
+              name="cssTab" 
+              className={`Tablinks ${ isCssTabOpen ? 'open' : '' }`} 
+              onClick={openTab}>CSS</button>
+            <button 
+              name="jsTab" 
+              className={`Tablinks ${ isJsTabOpen ? 'open' : '' }`} 
+              onClick={openTab}>JS</button>
+            <button 
+              onClick= {
+                () =>{
+                  console.log("saved")
+                }}
+              className="Tablinks Right"
+            >
+              Save
+            </button>
+            <button 
+              onClick= {
+                () =>{
+                  setIsPaused(prevPaused => !prevPaused)
+                }}
+              className="Tablinks Right"
+            >
+              { isPaused
+                ? 'play'
+                : 'pause'
+                }
+            </button>
+          </div>
+          <Editor 
+            language="xml"
+            value={html}
+            onChange={setHtml}
+            open={isHtmlTabOpen}
           />
+          <Editor 
+            language="css" 
+            value={css}
+            onChange={setCss}
+            open={isCssTabOpen}
+          />
+          <Editor 
+            language="javascript" 
+            value={js}
+            onChange={setJs}
+            open={isJsTabOpen}
+          />
+        </div>
+        <div className="pane right-pane">
+          <iframe 
+          srcDoc={srcDoc}
+            title="output"
+            sandbox="allow-scripts"
+            frameBorder="0"
+            width="100vw"
+            height="100%"
+            />
+        </div>
       </div>
-      <div>
-        <video playsInline muted ref={userVideo} autoPlay/>
-        <video playsInline muted ref={classmateVideo} autoPlay/>
-		</div>
+      <div id="VideoContainer">
+      <div className="Video SmallV">
+          <video playsInline muted ref={userVideo} autoPlay/>
+        </div>
+        <div className="Video">
+          <video playsInline muted ref={classmateVideo} autoPlay/>
+        </div>
+		  </div>
     </>
   );
 }

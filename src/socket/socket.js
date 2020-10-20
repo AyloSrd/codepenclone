@@ -49,6 +49,15 @@ export const callNewClassmate = (stream, myPeer, cb) => {
   })
 }
 
+// export const streamCall = ( call, cb ) => {
+//   console.log('from streamcall', call)
+//   if (!call)  return 
+//   call.on('stream', classmateVideoStream => {
+//       console.log('is streaming', classmateVideoStream)
+//       cb(classmateVideoStream)
+//     })
+// }
+
 export const streamCall = ( call, classmateVideo ) => {
   console.log('from streamcall', call)
   if (!call)  return 
