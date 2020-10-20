@@ -5,7 +5,7 @@ import useLocalStorage from './hooks/useLocalStorage'
 import Peer from 'peerjs'
 import { initiateSocketWithVideo, subscribeToClass } from './socket/socket'
 import { getCamera, answerCalls } from './peer/getCameraAndAnswerCalls'
-
+import saveIcon from './saveIcon.png'
 
 const ClassroomSocketVideo = () => {
 
@@ -137,6 +137,10 @@ const ClassroomSocketVideo = () => {
     
   }
 
+  const handleSave =() => {
+    console.log(html, css, js)
+  }
+
   return (
     <>
       <div id="EditorAndIframeContainer">
@@ -155,13 +159,11 @@ const ClassroomSocketVideo = () => {
               className={`Tablinks ${ isJsTabOpen ? 'open' : '' }`} 
               onClick={openTab}>JS</button>
             <button 
-              onClick= {
-                () =>{
-                  console.log("saved")
-                }}
+              id="saveBtn" 
+              onClick= {handleSave}
               className="Tablinks Right"
             >
-              Save
+              <img width="20px" src={saveIcon} alt="floppy disk icon"/>
             </button>
             <button 
               onClick= {

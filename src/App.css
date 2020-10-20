@@ -79,6 +79,10 @@ body {
   float:right;
 }
 
+#saveBtn {
+  margin-right: var(--little-margin-padding)
+}
+
 div.Play {
   width: 20px;
   height: 20px;
