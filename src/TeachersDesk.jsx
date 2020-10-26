@@ -67,29 +67,27 @@ const TeachersDesk = () => {
   useEffect(() => {
    const timeout = setTimeout(() => {
     if(!socketId) return () => clearTimeout(timeout)
-    console.log(html, css, js)
-    setSrcDoc(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <meta http-equiv="X-UA-Compatible" content="ie=edge">
-          <title>HTML Document</title>
-          <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-          <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-          <style>
-            ${css}
-          </style>
-        </head>
-        <body>
-          ${html}
-        </body>
-        <script>
-          ${js}
-        </script>
-      </html>
-    `)
+    // const test = '<script src="https://cdn.jsdelivr.net/npm/dataformsjs@4.8.0/js/react/jsxLoader.min.js"></script>' + html + '<script type="text/babel">' + js + '</script>'
+    const compiled = `<script src="https://cdn.jsdelivr.net/npm/dataformsjs@4.8.0/js/react/jsxLoader.min.js"></script><body>${html}</body><script type="text/babel">${js}</script>`
+    const src = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>HTML Document</title>
+        <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+        <style>
+          ${css}
+        </style>
+      </head>
+        ${compiled}
+    </html>
+  `
+    console.log(src)
+    setSrcDoc(src)
     sendCode('class', {
       html,
       css, 
